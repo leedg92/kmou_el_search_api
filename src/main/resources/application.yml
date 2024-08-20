@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    default: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+server:
+  port: 18080
+
+logging:
+  file:
+    path: logs
+    name: search-api
+
+search-studio:
+  url: http://192.168.0.200:11000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+server:
+  port: 18080
+
+logging:
+  file:
+    path: logs
+    name: search-api
+
+search-studio:
+  url: http://192.168.0.200:11000
