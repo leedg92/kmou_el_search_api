@@ -218,7 +218,7 @@ public class ApiConstants {
          */
         public static final String MAJOR_GB_NM = "MAJOR_GB_NM";
         /**
-         * 교과목개요(국문)
+         * 교과목개요(국문) 240822 LDG SUBJ_DESC_KOR -> SUBJ_DESC로 변경..
          */
         public static final String SUBJ_DESC_KOR = "SUBJ_DESC_KOR";
         /**
@@ -285,6 +285,10 @@ public class ApiConstants {
          * CQI 개선된점
          */
         public static final String CQI_IMP = "CQI_IMP";
+        /**
+         * 핵심역량 (주역량 + 부역량)
+         */
+        public static final String ABI_NM = "ABI_NM";
         /**
          * 핵심역량 주역량
          */

@@ -80,6 +80,10 @@ public class SubjectRequest {
      */
     private String courseClassification;
     /**
+     * 핵심역량
+     */
+    private String competence;
+    /**
      * 핵심역량(주역량)
      */
     private String coreCompetence;
@@ -91,7 +95,7 @@ public class SubjectRequest {
     @Builder
     private SubjectRequest(String keyword, Integer pageNum, Integer pagePer, List<Sort> sort, String startDate,
         String endDate, String university, String department, String major, String year,
-        String courseClassification, String grade, String semester, String coreCompetence, String subCoreCompetence) {
+        String courseClassification, String grade, String semester, String competence, String coreCompetence, String subCoreCompetence) {
     
         this.keyword = keyword;
         this.pageNum = pageNum;
@@ -106,6 +110,7 @@ public class SubjectRequest {
         this.courseClassification = courseClassification;
         this.grade = grade;
         this.semester = semester;
+        this.competence = competence;
         this.coreCompetence = coreCompetence;
         this.subCoreCompetence = subCoreCompetence;
     }

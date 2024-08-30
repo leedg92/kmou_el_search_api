@@ -91,27 +91,27 @@ public class SearchServiceImpl implements SearchService {
                 .build()
             );
 
-//            queryClauses.add(BoolQuery.Clauses.builder().
-//                query(SyntaxQuery.SyntaxQueryBuilder()
-//                    .query(request.getKeyword())
-//                    .field(Field._SBJT_MORPH)
-//                    .operator(Operator.AND)
-//                    .tokenizer(Tokenizer.KOREAN.getText())
-//                    .boost(2)
-//                    .build()).occur(Occur.SHOULD)
-//                .build()
-//            );
-//
-//            queryClauses.add(BoolQuery.Clauses.builder().
-//                query(SyntaxQuery.SyntaxQueryBuilder()
-//                    .query(request.getKeyword())
-//                    .field(Field._SBJT_BIGRAM)
-//                    .operator(Operator.AND)
-//                    .tokenizer(Tokenizer.KOREAN.getText())
-//                    .boost(1)
-//                    .build()).occur(Occur.SHOULD)
-//                .build()
-//            );
+            queryClauses.add(BoolQuery.Clauses.builder().
+                query(SyntaxQuery.SyntaxQueryBuilder()
+                    .query(request.getKeyword())
+                    .field(Field._SBJT_MORPH)
+                    .operator(Operator.AND)
+                    .tokenizer(Tokenizer.KOREAN.getText())
+                    .boost(2)
+                    .build()).occur(Occur.SHOULD)
+                .build()
+            );
+
+            queryClauses.add(BoolQuery.Clauses.builder().
+                query(SyntaxQuery.SyntaxQueryBuilder()
+                    .query(request.getKeyword())
+                    .field(Field._SBJT_BIGRAM)
+                    .operator(Operator.AND)
+                    .tokenizer(Tokenizer.KOREAN.getText())
+                    .boost(1)
+                    .build()).occur(Occur.SHOULD)
+                .build()
+            );
         }
 
         boolQueryBuilder.clauses(queryClauses);
@@ -242,7 +242,20 @@ public class SearchServiceImpl implements SearchService {
                 .occur(Occur.MUST)
                 .build());
         }
-        // 핵심역량(주역량)
+
+        // 핵심역량
+        if (request.getCompetence() != null && StringUtils.isNotBlank(request.getCompetence())) {
+            filterClauses.add(BoolFilter.Clauses.builder()
+                .filter(TermsFilter.TermsFilterBuilder()
+                    .terms(Arrays.stream(request.getCompetence().split("\\s*,\\s*"))
+                        .collect(Collectors.toList()))
+                    .field(Field.ABI_NM)
+                    .build())
+                .occur(Occur.MUST)
+                .build());
+        }
+
+//        // 핵심역량(주역량)
         if (request.getCoreCompetence() != null && StringUtils.isNotBlank(request.getCoreCompetence())) {
             filterClauses.add(BoolFilter.Clauses.builder()
                 .filter(TermsFilter.TermsFilterBuilder()
@@ -253,17 +266,18 @@ public class SearchServiceImpl implements SearchService {
                 .occur(Occur.MUST)
                 .build());
         }
-        // 핵심역량(부역량)
-        if (request.getSubCoreCompetence() != null && StringUtils.isNotBlank(request.getSubCoreCompetence())) {
-            filterClauses.add(BoolFilter.Clauses.builder()
-                .filter(TermsFilter.TermsFilterBuilder()
-                    .terms(Arrays.stream(request.getSubCoreCompetence().split("\\s*,\\s*"))
-                        .collect(Collectors.toList()))
-                    .field(Field.SUB_ABI_NM)
-                    .build())
-                .occur(Occur.MUST)
-                .build());
-        }
+
+//        // 핵심역량(부역량)
+//        if (request.getSubCoreCompetence() != null && StringUtils.isNotBlank(request.getSubCoreCompetence())) {
+//            filterClauses.add(BoolFilter.Clauses.builder()
+//                .filter(TermsFilter.TermsFilterBuilder()
+//                    .terms(Arrays.stream(request.getSubCoreCompetence().split("\\s*,\\s*"))
+//                        .collect(Collectors.toList()))
+//                    .field(Field.SUB_ABI_NM)
+//                    .build())
+//                .occur(Occur.MUST)
+//                .build());
+//        }
 
         boolFilterBuilder.clauses(filterClauses);
         Filter filter = boolFilterBuilder.build();
@@ -306,13 +320,12 @@ public class SearchServiceImpl implements SearchService {
             , Field.WTIME_NUM
             , Field.PTIME_NUM
             , Field.SISU
-            , Field.SUBJ_DESC_KOR
+            , Field.SUBJ_DESC
             , Field.SUBJ_DESC_ENG
             //테스트
-//                , Field.MAJOR_ABI
-//                , Field.ESSENTIAL_ABI
-//                , Field.MAIN_ABI_NM
-//                , Field.SUB_ABI_NM
+            , Field.MAIN_ABI_NM
+            , Field.SUB_ABI_NM
+            , Field.ABI_NM
         );
 
         // 개설과목 조회
@@ -322,7 +335,7 @@ public class SearchServiceImpl implements SearchService {
             .filter(filter)
             .fields(returnFields)
             .collapse(Collapse.builder()    // 중복제거
-                .field(Field.COLLAPSE_ID)
+                .field(Field.LECTURE_ID)
                 .build())
             .sort(request.getSort())
             .returnFrom(0)
@@ -353,7 +366,7 @@ public class SearchServiceImpl implements SearchService {
             .filter(filter)
             .fields(returnFields)
             .collapse(Collapse.builder()    // 중복제거
-                .field(Field.COLLAPSE_ID)
+                .field(Field.LECTURE_ID)
                 .build())
             .sort(request.getSort())
             .returnFrom(request.getPageNum())
@@ -714,6 +727,7 @@ public class SearchServiceImpl implements SearchService {
             , Field.TLPHON
             , Field.RSRCH_REALM
             , Field.LABRUM
+            , Field.LOCATION
         );
 
         //////////////////////////////////////////////////////////////////////
